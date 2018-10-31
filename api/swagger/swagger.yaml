@@ -1,0 +1,64 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Hello World App
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /tweets:
+    x-swagger-router-controller: main
+    get:
+      description: Returns 'Hello' to the caller
+      # used as the method name of the controller
+      operationId: getTweets
+      parameters:
+        - name: perPage
+          in: query
+          description: Page limit per request defaulted to 50
+          required: false
+          type: number
+        - name: currentPage
+          in: query
+          description: currentPage for pagination, defaulted to 1
+          required: false
+          type: number  
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/Tweets"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  Tweets:
+    properties:
+      tweets:
+        type: array
+        items: 
+          type: object
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
