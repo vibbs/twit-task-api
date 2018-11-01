@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import firebase from 'firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-
-
+import TweetsApp from './components/TweetsApp';
 
 
 firebase.initializeApp({
@@ -67,6 +66,9 @@ class App extends Component {
           <form className="form-group row">
             <input className="form-control" type="text" placeholder="Filter By #hashtag"/>
           </form>
+
+
+          <TweetsApp></TweetsApp>
       </div>
         
         
