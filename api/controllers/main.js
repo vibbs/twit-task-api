@@ -2,7 +2,7 @@
 var util = require('util');
 
 module.exports = {
-  getTweets: getTweets
+  getTweets    : getTweets
 };
 
 function getTweets(req, res) {
