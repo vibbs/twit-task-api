@@ -1,5 +1,5 @@
 import React, {Component}  from 'react';
-import Tweet from './Tweet.js'
+import Tweets from './Tweets.js'
 
 
 
@@ -8,7 +8,7 @@ class TweetsApp extends Component {
         return(  
             <div>
                 <h3>Tweets List</h3>
-                <Tweet></Tweet>
+                <Tweets></Tweets>
             </div>
 
         )

@@ -31,10 +31,32 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
   // install middleware
   swaggerExpress.register(app);
 
-  // tw.on('tweet', function(tweet){
-  //   console.log(tweet);
-  //   io.emit('tweet', tweet);
-  // });
+  tw.on('tweet', function(tweet){
+   
+
+    var new_tweet_obj={
+      id_str: tweet.id_str,
+      user: {
+          name: tweet.user.name,
+          screen_name: tweet.user.screen_name,
+          profile_image_url: tweet.user.profile_image_url,
+      },
+      text: tweet.text,
+      created_at: tweet.created_at,
+      favorite_count: tweet.favorite_count,
+      retweet_count: tweet.retweet_count,
+      entities: {
+          media: tweet.entities.media,
+          urls: tweet.entities.urls,
+          user_mentions: tweet.entities.user_mentions,
+          hashtags: tweet.entities.hashtags,
+          symbols: tweet.entities.symbols,
+        } 
+    };
+
+    console.log(JSON.stringify(new_tweet_obj, undefined, 2));
+    io.emit('tweet', tweet);
+  });
   
   io.on('connection', function(socket){
     console.log('a user connected');
