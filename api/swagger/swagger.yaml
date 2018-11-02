@@ -1,9 +1,9 @@
 swagger: "2.0"
 info:
   version: "0.0.1"
-  title: Hello World App
+  title: Twitter-Task
 # during dev, should point to your local machine
-host: localhost:3001
+host: twit-task-api.herokuapp.com
 # basePath prefixes all resource paths 
 basePath: /
 # 
