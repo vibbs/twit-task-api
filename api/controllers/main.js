@@ -4,6 +4,7 @@ var tweet_model = require('../../models/tweet.js');
 var io = require('../../app');
 var Twitter = require('twitter');
 var dotenv = require('dotenv');
+var async = require('async');
 dotenv.config({ silent: false });
 
 
@@ -25,8 +26,13 @@ function getTweets(req, res) {
     var currentPage = req.swagger.params.currentPage.value || 1 ;
 
     
-    tweet_model.find({}, function(err, docs){
-
+    tweet_model.find({})
+    .skip(currentPage)
+    .limit(perPage)
+    .exec(function(err, docs){
+      if(err){
+        res.json(err);
+      }
       res.json(docs);
 
     });
@@ -67,7 +73,41 @@ let twitterStream;
                 symbols: tweet.entities.symbols,
               } 
           };
-            sendMessage(new_tweet_obj);
+
+          async.waterfall([
+            function(callback) {
+              tweet_model.countDocuments({}, function(e, count){
+                if(e) {callback(e, null)}
+                console.log('count : '+ count)
+                callback(null, count)
+              })
+            },
+
+            function(count, callback) {
+              //this limit is to make sure that my db doesnt explode
+                if(count > 100 ){
+                  console.log("DB limit exceeded-");
+                  sendMessage(new_tweet_obj);
+                }else{
+                  tweet_model.create(new_tweet_obj, function(m_err, doc){
+                    if(m_err){
+                      console.error(m_err);
+                    }else{
+                      sendMessage(doc);
+                    }
+                  });
+                }
+                callback(null, 'success');
+            },
+
+          ],
+             function(err, result){
+               if (err) console.error(err) ;
+              //no need to do anything here
+          })
+
+          
+            
         });
 
         stream.on('error', (error) => {

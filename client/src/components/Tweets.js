@@ -31,7 +31,8 @@ class Tweets extends Component {
             console.log("Socket Connected");
             socket.on("tweets", data => {
                 let new_tweets = [data].concat(this.state.tweets);
-                this.setState({ tweets: new_tweets , loading :false});
+                var new_tweets_unq = _.uniq(new_tweets, 'id_str')
+                this.setState({ tweets: new_tweets_unq , loading :false});
             });
         });
         socket.on('disconnect', () => {
@@ -40,7 +41,7 @@ class Tweets extends Component {
         });
 
         
-	}
+	} 
     render(){
         const tweetItems = this.state.tweets.map((tweet, i) => {
 			return (

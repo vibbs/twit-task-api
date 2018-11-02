@@ -18,6 +18,8 @@ function loadConfig() {
         "db.name": process.env.DB_NAME
         , "db.host": process.env[prefix + '_SERVICE_HOST']
         , "db.port": process.env[prefix + '_SERVICE_PORT']
+        , "db.username": process.env[prefix + '_USERNAME']
+        , "db.password": process.env[prefix + '_PASSWORD']
         , has: function(key) {
             return this.hasOwnProperty(key) && typeof this[key] !== 'function';
         }
@@ -43,8 +45,8 @@ db.setup = function() {
         return;
     }
 
-    if (config.has('db.login') && config.has('db.password')) {
-        login = config.get('db.login') + ':' + config.get('db.password') + '@';
+    if (config.has('db.username') && config.has('db.password')) {
+        login = config.get('db.username') + ':' + config.get('db.password') + '@';
     }
     if (config.has('db.uri')) {
         uri = config.get('db.uri');
