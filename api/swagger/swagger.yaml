@@ -70,11 +70,27 @@ paths:
 # complex objects have schema definitions
 definitions:
   Tweets:
+    type: array
+    items: 
+        $ref: "#/definitions/Tweet"
+  Tweet:
+    type: "object"
     properties:
-      tweets:
-        type: array
-        items: 
-          type: object
+      id_str: 
+        type: "string"
+      user: 
+        type: "object"
+      text: 
+        type: "string"
+      created_at: 
+        type: "string"
+      favorite_count: 
+        type: "string"
+      retweet_count: 
+        type: "string"
+      entities: 
+        type: "object"
+      
   ErrorResponse:
     required:
       - message
