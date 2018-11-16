@@ -7,6 +7,35 @@ var dotenv = require('dotenv');
 var async = require('async');
 dotenv.config({ silent: false });
 
+// import { composeWithMongoose } from 'graphql-compose-mongoose';
+// import { schemaComposer } from 'graphql-compose';
+
+// const customizationOptions = {}; // left it empty for simplicity, described below
+// const TweetTC = composeWithMongoose(tweet_model, customizationOptions);
+
+// schemaComposer.Query.addFields({
+//   tweetById: TweetTC.getResolver('findById'),
+//   tweetByIds: TweetTC.getResolver('findByIds'),
+//   tweetOne: TweetTC.getResolver('findOne'),
+//   tweetMany: TweetTC.getResolver('findMany'),
+//   tweetCount: TweetTC.getResolver('count'),
+//   tweetConnection: TweetTC.getResolver('connection'),
+//   tweetPagination: TweetTC.getResolver('pagination'),
+// });
+ 
+// schemaComposer.Mutation.addFields({
+//   tweetCreateOne: TweetTC.getResolver('createOne'),
+//   tweetCreateMany: TweetTC.getResolver('createMany'),
+//   tweetUpdateById: TweetTC.getResolver('updateById'),
+//   tweetUpdateOne: TweetTC.getResolver('updateOne'),
+//   tweetUpdateMany: TweetTC.getResolver('updateMany'),
+//   tweetRemoveById: TweetTC.getResolver('removeById'),
+//   tweetRemoveOne: TweetTC.getResolver('removeOne'),
+//   tweetRemoveMany: TweetTC.getResolver('removeMany'),
+// });
+ 
+// const graphqlSchema = schemaComposer.buildSchema();
+
 
 var twitter = new Twitter({
     consumer_key: process.env.CONSUMER_KEY,
@@ -42,7 +71,10 @@ function getTweets(req, res) {
 function streamTweets(req, res){
   res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
   res.header('Access-Control-Allow-Credentials', true);
+  console.log("USERID:::::");
+  console.log(req.swagger.params.userId.value);
   stream();
+  
 }
 
 
@@ -50,8 +82,10 @@ let socketConnection;
 let twitterStream;
 
   //Emits data with socket.io as twitter stream flows in
-  const stream = () => {
-    twitter.stream('statuses/filter', { track: "javascript" }, (stream) => {
+  const stream = (userId) => {
+    //VQyXgVhrHwX6w3UUVaoMcwwAIue2
+    var params = {follow : userId};
+    twitter.stream('statuses/filter', params, (stream) => {
         stream.on('data', (tweet) => {
           console.log('-');
           var new_tweet_obj={
@@ -121,7 +155,8 @@ let twitterStream;
 
   io.on('connection', function(socket){
     socketConnection = socket;
-    stream();
+    console.log('log input param : ' + socket.handshake.query.userId);
+    stream(socket.handshake.query.userId);
      socket.on("connection", () => console.log("Client connected"));
      socket.on("disconnect", () => console.log("Client disconnected"));
   });

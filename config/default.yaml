@@ -26,7 +26,7 @@ swagger:
       - onError: json_error_handler
       - cors
       - swagger_security
-      - _swagger_validate
+      #- _swagger_validate
       - express_compatibility
       - _router
 

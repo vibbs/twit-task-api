@@ -1,9 +1,15 @@
 var mongoose = require('mongoose');
 
+
 var schema = new mongoose.Schema({
   id_str: String,
-  user: Object,
+  tweet: Object,
   text: String,
+  user : {
+    name: String,
+    screen_name: String,
+    profile_image_url: String
+  },
   created_at: Date,
   favorite_count: Number,
   retweet_count: Number,

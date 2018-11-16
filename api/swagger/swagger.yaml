@@ -20,12 +20,18 @@ produces:
   - application/json
   - application/octet-stream
 paths:
-  /:
+  /api/:
     x-swagger-router-controller: main
     get:
       description: Streams tweets from the twitter streaming api along with saving into the backend into the DB
       # used as the method name of the controller
       operationId: streamTweets  
+      parameters:
+        - name: userId
+          in: query
+          description: UserId for filtering the tweets
+          required: true
+          type: string
       responses:
         "200":
           description: Success
