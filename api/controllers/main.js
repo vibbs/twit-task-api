@@ -157,6 +157,38 @@ let twitterStream;
     socketConnection = socket;
     console.log('log input param : ' + socket.handshake.query.userId);
     stream(socket.handshake.query.userId);
+
+    //make the twitter API call to get th elatest tweets
+    //by deafult this excludes the RT's
+    var params = {user_id : socket.handshake.query.userId, count : 50 };
+    twitter.get('statuses/user_timeline', params, function(error, tweets, response) {
+      if (!error) {
+        console.log("other tweets fetched- count : 50");
+        for(var i = 0 ; i < tweets.length ; i++){
+          var tweet = tweets[i];
+          var new_tweet_obj={
+            id_str: tweet.id_str,
+            user: {
+                name: tweet.user.name,
+                screen_name: tweet.user.screen_name,
+                profile_image_url: tweet.user.profile_image_url,
+            },
+            text: tweet.text,
+            created_at: tweet.created_at,
+            favorite_count: tweet.favorite_count,
+            retweet_count: tweet.retweet_count,
+            entities: {
+                media: tweet.entities.media,
+                urls: tweet.entities.urls,
+                user_mentions: tweet.entities.user_mentions,
+                hashtags: tweet.entities.hashtags,
+                symbols: tweet.entities.symbols,
+              } 
+          };
+          sendMessage(new_tweet_obj);
+        }
+      }
+    });
      socket.on("connection", () => console.log("Client connected"));
      socket.on("disconnect", () => console.log("Client disconnected"));
   });
